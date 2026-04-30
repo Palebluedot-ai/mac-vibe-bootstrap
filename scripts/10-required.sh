@@ -30,16 +30,13 @@ for pkg in git wget curl jq yq ripgrep fd fzf tree htop zoxide bat eza tmux star
 done
 
 # 4) Python
-if has_cmd python3; then
-  log_ok "[installed] python3: $(python3 --version 2>/dev/null || true)"
-else
-  install_brew_formula python
-fi
+install_brew_formula python
+log_ok "python3 active: $(python3 --version 2>/dev/null || true)"
 
 # 5) Node via FNM
 if has_cmd fnm; then
   append_if_missing "$HOME/.zshrc" 'eval "$(fnm env --use-on-cd --shell zsh)"'
-  run_cmd 'eval "$(fnm env --use-on-cd --shell zsh)"; fnm install --lts; fnm default lts-latest'
+  run_cmd 'eval "$(fnm env --use-on-cd --shell bash)"; fnm install --lts; fnm default lts-latest'
 else
   log_error "fnm not available after install"
 fi
@@ -66,8 +63,12 @@ for app in warp google-chrome visual-studio-code obsidian; do
 done
 
 # 8) Xcode first-launch and license (safe if already done)
-run_cmd "sudo xcodebuild -license accept || true"
-run_cmd "sudo xcodebuild -runFirstLaunch || true"
+if sudo -n true >/dev/null 2>&1; then
+  run_cmd "sudo xcodebuild -license accept || true"
+  run_cmd "sudo xcodebuild -runFirstLaunch || true"
+else
+  log_warn "No sudo TTY; skip xcodebuild privileged init in this session. Run locally: sudo xcodebuild -license accept && sudo xcodebuild -runFirstLaunch"
+fi
 
 # 9) Claude Code + Codex executable validation (non-blocking)
 for cli in claude codex; do

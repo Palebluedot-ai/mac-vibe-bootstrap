@@ -9,9 +9,16 @@ for pkg in go rustup-init watch coreutils gnu-sed gawk pyenv pipx; do
   install_brew_formula "$pkg"
 done
 
-for app in arc raycast docker notion keepingyouawake stats aldente; do
+for app in arc raycast notion keepingyouawake stats aldente; do
   install_brew_cask "$app"
 done
+
+# Docker Desktop may require sudo for /usr/local/cli-plugins link
+if sudo -n true >/dev/null 2>&1; then
+  install_brew_cask docker
+else
+  log_warn "Skipping docker install in non-interactive sudo session. Run locally: brew install --cask docker"
+fi
 
 # Optional global npm tools from config
 OPTIONAL_NPM_LIST="$ROOT_DIR/config/npm/global-packages.optional.txt"

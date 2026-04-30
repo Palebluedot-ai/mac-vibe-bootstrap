@@ -20,7 +20,7 @@ Options:
   --required           Run required part only
   --optional           Run optional part only
   --update             Update installed tools only
-  --only <module>      Run only one module (preflight|required|optional|stability|postcheck|update)
+  --only <module>      Run only one module (preflight|required|optional|stability|postcheck|checklist|update)
   --skip <module>      Skip one module
   --dry-run            Show what would run without executing
   -h, --help           Show help
@@ -47,7 +47,7 @@ export DRY_RUN LOG_FILE
 
 run_module() {
   local key="$1"
-  local path="$2"
+  local cmd="$2"
 
   if [[ -n "$ONLY" && "$ONLY" != "$key" ]]; then
     log_info "[SKIP] $key (only=$ONLY)"
@@ -60,32 +60,36 @@ run_module() {
   fi
 
   log_step "Running module: $key"
-  run_cmd "bash '$path'"
+  run_cmd "$cmd"
 }
 
 log_info "Mode=$MODE dry_run=$BOOTSTRAP_DRY_RUN"
-run_module "preflight" "$SCRIPTS_DIR/00-preflight.sh"
+run_module "preflight" "bash '$SCRIPTS_DIR/00-preflight.sh'"
 
 case "$MODE" in
   all)
-    run_module "required" "$SCRIPTS_DIR/10-required.sh"
-    run_module "optional" "$SCRIPTS_DIR/20-optional.sh"
-    run_module "stability" "$SCRIPTS_DIR/30-system-stability.sh"
-    run_module "postcheck" "$SCRIPTS_DIR/70-post-check.sh"
+    run_module "required" "bash '$SCRIPTS_DIR/10-required.sh'"
+    run_module "optional" "bash '$SCRIPTS_DIR/20-optional.sh'"
+    run_module "stability" "bash '$SCRIPTS_DIR/30-system-stability.sh'"
+    run_module "postcheck" "bash '$SCRIPTS_DIR/70-post-check.sh'"
+    run_module "checklist" "bash '$SCRIPTS_DIR/90-checklist.sh' --required"
+    run_module "checklist" "bash '$SCRIPTS_DIR/90-checklist.sh' --optional"
     ;;
   required)
-    run_module "required" "$SCRIPTS_DIR/10-required.sh"
-    run_module "stability" "$SCRIPTS_DIR/30-system-stability.sh"
-    run_module "postcheck" "$SCRIPTS_DIR/70-post-check.sh"
+    run_module "required" "bash '$SCRIPTS_DIR/10-required.sh'"
+    run_module "stability" "bash '$SCRIPTS_DIR/30-system-stability.sh'"
+    run_module "postcheck" "bash '$SCRIPTS_DIR/70-post-check.sh'"
+    run_module "checklist" "bash '$SCRIPTS_DIR/90-checklist.sh' --required"
     ;;
   optional)
-    run_module "optional" "$SCRIPTS_DIR/20-optional.sh"
-    run_module "stability" "$SCRIPTS_DIR/30-system-stability.sh"
-    run_module "postcheck" "$SCRIPTS_DIR/70-post-check.sh"
+    run_module "optional" "bash '$SCRIPTS_DIR/20-optional.sh'"
+    run_module "stability" "bash '$SCRIPTS_DIR/30-system-stability.sh'"
+    run_module "postcheck" "bash '$SCRIPTS_DIR/70-post-check.sh'"
+    run_module "checklist" "bash '$SCRIPTS_DIR/90-checklist.sh' --optional"
     ;;
   update)
-    run_module "update" "$SCRIPTS_DIR/80-update-all.sh"
-    run_module "postcheck" "$SCRIPTS_DIR/70-post-check.sh"
+    run_module "update" "bash '$SCRIPTS_DIR/80-update-all.sh'"
+    run_module "postcheck" "bash '$SCRIPTS_DIR/70-post-check.sh'"
     ;;
   *)
     log_error "Invalid mode: $MODE"; exit 1 ;;

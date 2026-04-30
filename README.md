@@ -14,6 +14,7 @@
 - `scripts/20-optional.sh`：可选安装
 - `scripts/30-system-stability.sh`：系统稳定性配置（防睡眠/后台保活）
 - `scripts/70-post-check.sh`：安装后健康检查
+- `scripts/90-checklist.sh`：安装清单核验（缺失即报错）
 - `scripts/80-update-all.sh`：统一升级
 - `config/brew/*.required|optional`：Brewfile 清单
 - `config/npm/*`：npm 全局包清单（脚本循环读取）
@@ -44,6 +45,7 @@ bash bootstrap.sh --update
 ```bash
 bash bootstrap.sh --only required
 bash bootstrap.sh --only stability
+bash bootstrap.sh --only checklist
 ```
 
 ### 跳过某模块
@@ -63,6 +65,8 @@ bash bootstrap.sh --dry-run
 - Node.js（FNM 管理）+ npm/pnpm
 - Claude Code CLI / Codex CLI
 - Warp / Chrome / VSCode / Obsidian
+- 稳定性配置：pmset、防睡眠 launch agent、登录项设置（Stats/KeepingYouAwake/AlDente）
+- Checklist 核验：必选项缺失会报错
 
 ## 版本与升级判断
 - 已安装判断：`command -v`、`brew list`、`brew list --cask`

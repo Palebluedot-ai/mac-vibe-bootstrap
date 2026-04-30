@@ -27,7 +27,11 @@ _ts() { date +"%F %T"; }
 _log() {
   local level="$1"; shift
   local msg="$*"
-  echo "[$(_ts)] [$level] $msg" | tee -a "$LOG_FILE"
+  if [[ -n "${LOG_FILE:-}" ]]; then
+    echo "[$(_ts)] [$level] $msg" | tee -a "$LOG_FILE"
+  else
+    echo "[$(_ts)] [$level] $msg"
+  fi
 }
 
 log_info() { echo -e "${C_BLUE}$*${C_RESET}"; _log INFO "$*"; }
@@ -106,7 +110,7 @@ install_brew_cask() {
       ;;
     missing)
       log_info "Installing cask: $app"
-      run_cmd "brew install --cask $app"
+      run_cmd "brew install --cask $app || brew install --cask --force $app"
       ;;
   esac
 }
