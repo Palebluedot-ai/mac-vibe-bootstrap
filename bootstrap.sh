@@ -20,7 +20,7 @@ Options:
   --required           Run required part only
   --optional           Run optional part only
   --update             Update installed tools only
-  --only <module>      Run only one module (preflight|required|optional|postcheck|update)
+  --only <module>      Run only one module (preflight|required|optional|stability|postcheck|update)
   --skip <module>      Skip one module
   --dry-run            Show what would run without executing
   -h, --help           Show help
@@ -70,14 +70,17 @@ case "$MODE" in
   all)
     run_module "required" "$SCRIPTS_DIR/10-required.sh"
     run_module "optional" "$SCRIPTS_DIR/20-optional.sh"
+    run_module "stability" "$SCRIPTS_DIR/30-system-stability.sh"
     run_module "postcheck" "$SCRIPTS_DIR/70-post-check.sh"
     ;;
   required)
     run_module "required" "$SCRIPTS_DIR/10-required.sh"
+    run_module "stability" "$SCRIPTS_DIR/30-system-stability.sh"
     run_module "postcheck" "$SCRIPTS_DIR/70-post-check.sh"
     ;;
   optional)
     run_module "optional" "$SCRIPTS_DIR/20-optional.sh"
+    run_module "stability" "$SCRIPTS_DIR/30-system-stability.sh"
     run_module "postcheck" "$SCRIPTS_DIR/70-post-check.sh"
     ;;
   update)

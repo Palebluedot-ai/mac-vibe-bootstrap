@@ -12,6 +12,7 @@
 - `scripts/00-preflight.sh`：系统预检
 - `scripts/10-required.sh`：必选安装
 - `scripts/20-optional.sh`：可选安装
+- `scripts/30-system-stability.sh`：系统稳定性配置（防睡眠/后台保活）
 - `scripts/70-post-check.sh`：安装后健康检查
 - `scripts/80-update-all.sh`：统一升级
 - `config/brew/*.required|optional`：Brewfile 清单
@@ -42,6 +43,7 @@ bash bootstrap.sh --update
 ### 仅跑某模块
 ```bash
 bash bootstrap.sh --only required
+bash bootstrap.sh --only stability
 ```
 
 ### 跳过某模块

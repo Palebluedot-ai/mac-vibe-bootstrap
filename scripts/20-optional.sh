@@ -9,7 +9,7 @@ for pkg in go rustup-init watch coreutils gnu-sed gawk pyenv pipx; do
   install_brew_formula "$pkg"
 done
 
-for app in arc raycast docker notion; do
+for app in arc raycast docker notion keepingyouawake stats aldente; do
   install_brew_cask "$app"
 done
 
