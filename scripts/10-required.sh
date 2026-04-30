@@ -44,10 +44,18 @@ else
   log_error "fnm not available after install"
 fi
 
-# 6) npm & pnpm
+# 6) npm global tools from config
+REQUIRED_NPM_LIST="$ROOT_DIR/config/npm/global-packages.required.txt"
 if has_cmd npm; then
   log_ok "[installed] npm: $(npm -v 2>/dev/null || true)"
-  run_cmd "npm install -g pnpm typescript tsx eslint prettier"
+  while IFS= read -r pkg; do
+    [[ -z "$pkg" ]] && continue
+    if npm list -g --depth=0 "$pkg" >/dev/null 2>&1; then
+      log_ok "[installed] npm global: $pkg"
+    else
+      run_cmd "npm install -g $pkg || true"
+    fi
+  done < "$REQUIRED_NPM_LIST"
 else
   log_warn "npm not found (likely shell not reloaded). Re-run bootstrap after opening new terminal."
 fi
@@ -61,9 +69,14 @@ done
 run_cmd "sudo xcodebuild -license accept || true"
 run_cmd "sudo xcodebuild -runFirstLaunch || true"
 
-# 9) Claude Code + Codex install placeholders
-log_info "Installing Claude Code and Codex CLI (best-effort)"
-run_cmd "npm install -g @anthropic-ai/claude-code || true"
-run_cmd "npm install -g @openai/codex || true"
+# 9) Claude Code + Codex executable validation (non-blocking)
+for cli in claude codex; do
+  if has_cmd "$cli"; then
+    ver="$($cli --version 2>/dev/null | head -n 1 || true)"
+    log_ok "[ready] $cli => ${ver:-version unknown}"
+  else
+    log_warn "[not_ready] $cli not found in PATH (install may have failed or shell not reloaded)"
+  fi
+done
 
 log_ok "Required phase completed"

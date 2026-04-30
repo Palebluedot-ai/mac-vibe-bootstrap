@@ -5,7 +5,7 @@ source "$ROOT_DIR/scripts/lib.sh"
 
 log_step "Post-check: versions and health"
 
-for cmd in brew git python3 uv fnm node npm pnpm gh; do
+for cmd in brew git python3 uv fnm node npm pnpm gh claude codex; do
   if has_cmd "$cmd"; then
     ver="$($cmd --version 2>/dev/null | head -n 1 || true)"
     log_ok "[ok] $cmd => $ver"

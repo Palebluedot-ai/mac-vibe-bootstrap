@@ -6,7 +6,7 @@ SCRIPTS_DIR="$ROOT_DIR/scripts"
 LOG_DIR="$ROOT_DIR/logs"
 mkdir -p "$LOG_DIR"
 
-DRY_RUN=0
+BOOTSTRAP_DRY_RUN=0
 MODE="all"       # all|required|optional|update
 ONLY=""
 SKIP=""
@@ -34,7 +34,7 @@ while [[ $# -gt 0 ]]; do
     --update) MODE="update"; shift ;;
     --only) ONLY="${2:-}"; shift 2 ;;
     --skip) SKIP="${2:-}"; shift 2 ;;
-    --dry-run) DRY_RUN=1; shift ;;
+    --dry-run) BOOTSTRAP_DRY_RUN=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "Unknown option: $1"; usage; exit 1 ;;
   esac
@@ -42,7 +42,8 @@ done
 
 source "$SCRIPTS_DIR/lib.sh"
 init_logging "$LOG_DIR"
-set_dry_run "$DRY_RUN"
+set_dry_run "$BOOTSTRAP_DRY_RUN"
+export DRY_RUN LOG_FILE
 
 run_module() {
   local key="$1"
@@ -62,7 +63,7 @@ run_module() {
   run_cmd "bash '$path'"
 }
 
-log_info "Mode=$MODE dry_run=$DRY_RUN"
+log_info "Mode=$MODE dry_run=$BOOTSTRAP_DRY_RUN"
 run_module "preflight" "$SCRIPTS_DIR/00-preflight.sh"
 
 case "$MODE" in

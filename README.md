@@ -4,7 +4,7 @@
 
 ## 目标
 - **可重复执行**：已安装自动跳过
-- **可升级判断**：通过 `brew outdated` / 版本检测
+- **三态判断**：`installed_latest` / `installed_outdated` / `missing`
 - **单入口执行**：只需要跑 `bootstrap.sh`
 
 ## 目录
@@ -15,8 +15,8 @@
 - `scripts/70-post-check.sh`：安装后健康检查
 - `scripts/80-update-all.sh`：统一升级
 - `config/brew/*.required|optional`：Brewfile 清单
-- `config/npm/*`：npm 全局包清单
-- `config/python/*`：Python 工具清单
+- `config/npm/*`：npm 全局包清单（脚本循环读取）
+- `config/python/*`：Python 工具清单（脚本循环读取）
 
 ## 使用
 ```bash

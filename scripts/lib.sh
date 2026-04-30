@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DRY_RUN=0
-LOG_FILE=""
+DRY_RUN="${DRY_RUN:-0}"
+LOG_FILE="${LOG_FILE:-}"
 
 C_RESET='\033[0m'
 C_BLUE='\033[1;34m'
@@ -47,24 +47,68 @@ run_cmd() {
 
 has_cmd() { command -v "$1" >/dev/null 2>&1; }
 
+# Return 0 if package appears in brew outdated list
+is_brew_outdated() {
+  local name="$1"
+  brew outdated --quiet | grep -Fxq "$name"
+}
+
+brew_formula_state() {
+  local pkg="$1"
+  if ! brew list "$pkg" >/dev/null 2>&1; then
+    echo "missing"
+  elif is_brew_outdated "$pkg"; then
+    echo "installed_outdated"
+  else
+    echo "installed_latest"
+  fi
+}
+
+brew_cask_state() {
+  local app="$1"
+  if ! brew list --cask "$app" >/dev/null 2>&1; then
+    echo "missing"
+  elif is_brew_outdated "$app"; then
+    echo "installed_outdated"
+  else
+    echo "installed_latest"
+  fi
+}
+
 install_brew_formula() {
   local pkg="$1"
-  if brew list "$pkg" >/dev/null 2>&1; then
-    log_ok "[installed] brew formula: $pkg"
-  else
-    log_info "Installing brew formula: $pkg"
-    run_cmd "brew install $pkg"
-  fi
+  local state
+  state="$(brew_formula_state "$pkg")"
+  case "$state" in
+    installed_latest)
+      log_ok "[installed_latest] brew formula: $pkg"
+      ;;
+    installed_outdated)
+      log_warn "[installed_outdated] brew formula: $pkg (run --update to upgrade)"
+      ;;
+    missing)
+      log_info "Installing brew formula: $pkg"
+      run_cmd "brew install $pkg"
+      ;;
+  esac
 }
 
 install_brew_cask() {
   local app="$1"
-  if brew list --cask "$app" >/dev/null 2>&1; then
-    log_ok "[installed] cask: $app"
-  else
-    log_info "Installing cask: $app"
-    run_cmd "brew install --cask $app"
-  fi
+  local state
+  state="$(brew_cask_state "$app")"
+  case "$state" in
+    installed_latest)
+      log_ok "[installed_latest] cask: $app"
+      ;;
+    installed_outdated)
+      log_warn "[installed_outdated] cask: $app (run --update to upgrade)"
+      ;;
+    missing)
+      log_info "Installing cask: $app"
+      run_cmd "brew install --cask $app"
+      ;;
+  esac
 }
 
 append_if_missing() {
