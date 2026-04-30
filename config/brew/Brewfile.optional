@@ -1,0 +1,16 @@
+tap "homebrew/core"
+tap "homebrew/cask"
+
+brew "go"
+brew "rustup-init"
+brew "watch"
+brew "coreutils"
+brew "gnu-sed"
+brew "gawk"
+brew "pyenv"
+brew "pipx"
+
+cask "arc"
+cask "raycast"
+cask "docker"
+cask "notion"

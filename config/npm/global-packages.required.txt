@@ -1,0 +1,7 @@
+pnpm
+typescript
+tsx
+eslint
+prettier
+@anthropic-ai/claude-code
+@openai/codex
