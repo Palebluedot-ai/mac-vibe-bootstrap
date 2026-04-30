@@ -127,6 +127,7 @@ bash scripts/30-system-stability.sh --status
 bash bootstrap.sh --required
 bash bootstrap.sh --optional
 bash bootstrap.sh --only checklist
+bash bootstrap.sh --only report
 bash bootstrap.sh --update
 ```
 

@@ -20,7 +20,7 @@ Options:
   --required           Run required part only
   --optional           Run optional part only
   --update             Update installed tools only
-  --only <module>      Run only one module (preflight|required|optional|stability|postcheck|checklist|update)
+  --only <module>      Run only one module (preflight|required|optional|stability|postcheck|checklist|report|update)
   --skip <module>      Skip one module
   --dry-run            Show what would run without executing
   -h, --help           Show help
@@ -74,22 +74,26 @@ case "$MODE" in
     run_module "postcheck" "bash '$SCRIPTS_DIR/70-post-check.sh'"
     run_module "checklist" "bash '$SCRIPTS_DIR/90-checklist.sh' --required"
     run_module "checklist" "bash '$SCRIPTS_DIR/90-checklist.sh' --optional"
+    run_module "report" "bash '$SCRIPTS_DIR/95-final-report.sh'"
     ;;
   required)
     run_module "required" "bash '$SCRIPTS_DIR/10-required.sh'"
     run_module "stability" "bash '$SCRIPTS_DIR/30-system-stability.sh'"
     run_module "postcheck" "bash '$SCRIPTS_DIR/70-post-check.sh'"
     run_module "checklist" "bash '$SCRIPTS_DIR/90-checklist.sh' --required"
+    run_module "report" "bash '$SCRIPTS_DIR/95-final-report.sh'"
     ;;
   optional)
     run_module "optional" "bash '$SCRIPTS_DIR/20-optional.sh'"
     run_module "stability" "bash '$SCRIPTS_DIR/30-system-stability.sh'"
     run_module "postcheck" "bash '$SCRIPTS_DIR/70-post-check.sh'"
     run_module "checklist" "bash '$SCRIPTS_DIR/90-checklist.sh' --optional"
+    run_module "report" "bash '$SCRIPTS_DIR/95-final-report.sh'"
     ;;
   update)
     run_module "update" "bash '$SCRIPTS_DIR/80-update-all.sh'"
     run_module "postcheck" "bash '$SCRIPTS_DIR/70-post-check.sh'"
+    run_module "report" "bash '$SCRIPTS_DIR/95-final-report.sh'"
     ;;
   *)
     log_error "Invalid mode: $MODE"; exit 1 ;;

@@ -17,6 +17,7 @@
 - `scripts/30-system-stability.sh`：系统稳定性配置（防睡眠/后台保活）
 - `scripts/70-post-check.sh`：安装后健康检查
 - `scripts/90-checklist.sh`：安装清单核验（缺失即报错）
+- `scripts/95-final-report.sh`：生成机器验收报告（Markdown）
 - `scripts/80-update-all.sh`：统一升级
 - `config/brew/*.required|optional`：Brewfile 清单
 - `config/npm/*`：npm 全局包清单（脚本循环读取）
@@ -48,6 +49,7 @@ bash bootstrap.sh --update
 bash bootstrap.sh --only required
 bash bootstrap.sh --only stability
 bash bootstrap.sh --only checklist
+bash bootstrap.sh --only report
 ```
 
 ### 跳过某模块
