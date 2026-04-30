@@ -1,5 +1,7 @@
 # mac-vibe-bootstrap
 
+> 新机快速上手：见 `docs/first-boot.md`
+
 新 Mac 的 Vibe Coding 一键配置脚本（两段式：必选 / 可选）。
 
 ## 目标
